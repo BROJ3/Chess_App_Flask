@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Games</h1>
+
+<form method="GET" action="{{ url_for('games_list') }}">
+    <input type="text" name="q" placeholder="Search by game ID"
+           value="{{ request.args.get('q','') }}">
+    <input type="submit" value="Search">
+    <a href="{{ url_for('games_list') }}">Clear</a>
+</form>
+
+<br>
+
+<table>
+    <thead>
+        <tr>
+            <th>Action</th>
+            <th>Game ID</th>
+            <th>Date</th>
+            <th>Result</th>
+            <th>TournamentKey</th>
+            <th>WhiteKey</th>
+            <th>BlackKey</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for g in games %}
+        {% set is_player = me and (me.userKey == g.whiteKey or me.userKey == g.blackKey) %}
+        {% set ongoing = (g.result == '*' or not g.result) %}
+        <tr>
+            <td>
+                {% if is_player and ongoing %}
+                    <a href="{{ url_for('game_play', gameKey=g.gameKey) }}">Play</a>
+                {% else %}
+                    <a href="{{ url_for('game_review', gameKey=g.gameKey) }}">Review</a>
+                {% endif %}
+            </td>
+            <td>{{ g.gameID }}</td>
+            <td>{{ g.date }}</td>
+            <td>{{ g.result }}</td>
+            <td>{{ g.tournamentKey }}</td>
+            <td>{{ g.whiteKey }}</td>
+            <td>{{ g.blackKey }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

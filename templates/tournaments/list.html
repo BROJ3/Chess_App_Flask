@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Tournaments</h1>
+
+<!-- Search bar -->
+<form method="GET" action="/tournaments/manage">
+    <input type="text" name="q" placeholder="Search by ID or name"
+           value="{{ request.args.get('q','') }}">
+    <input type="submit" value="Search">
+    <a href="/tournaments/manage">Clear</a>
+</form>
+
+<br>
+
+<!-- Create new tournament -->
+<div>
+    <a href="/tournaments/manage?pkval=new">Create new tournament</a>
+</div>
+
+<br>
+
+<table>
+    <thead>
+        <tr>
+            <th>Edit</th>
+            <th>Delete</th>
+            <th>View Participants</th>
+            <th>Tournament ID</th>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Rating Limit</th>
+            <th>Person Limit</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for row in obj.data %}
+        <tr>
+            <!-- Edit -->
+            <td>
+                <a href="/tournaments/manage?pkval={{ row[obj.pk] }}">
+                    Edit
+                </a>
+            </td>
+
+            <!-- Delete -->
+            <td>
+                <a href="/tournaments/manage?pkval={{ row[obj.pk] }}&action=delete"
+                   onclick="return confirm('Delete this tournament?');">
+                    Delete
+                </a>
+            </td>
+
+            <!-- View Participants -->
+            <td>
+                <a href="/tournaments/participants?pkval={{ row[obj.pk] }}">
+                    View Participants
+                </a>
+            </td>
+
+            <!-- Tournament info -->
+            <td>{{ row.tournamentID }}</td>
+            <td>{{ row.name }}</td>
+            <td>{{ row.location }}</td>
+            <td>{{ row.ratingLimit }}</td>
+            <td>{{ row.personLimit }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="error_text">
+    {% if obj.errors | length > 0 %}
+        {% for error in obj.errors %}
+            <div>{{ error }}</div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<div>
+    <form action="{{ url_for('manage_user', action='insert') }}" method="POST">
+
+        User ID:<br>
+        <input type="text" name="userID" value="{{ obj.data[0].userID }}" />
+        <br><br>
+
+        First name:<br>
+        <input type="text" name="Fname" value="{{ obj.data[0].Fname }}" />
+        <br><br>
+
+        Last name:<br>
+        <input type="text" name="Lname" value="{{ obj.data[0].Lname }}" />
+        <br><br>
+
+        Email:<br>
+        <input type="text" name="email" value="{{ obj.data[0].email }}" />
+        <br><br>
+
+        Country (3-letter code):<br>
+        <input type="text" name="country" value="{{ obj.data[0].country }}" />
+        <br><br>
+
+        Date of Birth:<br>
+        <input type="date" name="DOB" value="{{ obj.data[0].DOB }}" />
+        <br><br>
+
+        Rating:<br>
+        <input type="text" name="rating" value="{{ obj.data[0].rating }}" />
+        <br><br>
+
+        Title (e.g. GM, IM, NM):<br>
+        <input type="text" name="title" value="{{ obj.data[0].title }}" />
+        <br><br>
+
+        Role:<br>
+        <select name="role">
+            {% for role in obj.roles %}
+                {% if obj.data[0].role == role.value %}
+                    <option selected="true" value="{{ role.value }}">{{ role.text }}</option>
+                {% else %}
+                    <option value="{{ role.value }}">{{ role.text }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <br><br>
+
+        Password:<br>
+        <input type="password" name="password" value="" />
+        <br><br>
+
+        Retype Password:<br>
+        <input type="password" name="password2" value="" />
+        <br><br>
+
+        <input type="submit" value="Submit" />
+    </form>
+</div>
+{% endblock %}

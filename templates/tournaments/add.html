@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Create Tournament</h1>
+
+<div class="error_text">
+    {% if obj.errors | length > 0 %}
+        {% for error in obj.errors %}
+            <div>{{ error }}</div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<form action="/tournaments/manage?action=insert" method="POST">
+
+    Tournament ID:<br>
+    <input type="text" name="tournamentID" value="{{ obj.data[0].tournamentID }}"><br><br>
+
+    Name:<br>
+    <input type="text" name="name" value="{{ obj.data[0].name }}"><br><br>
+
+    Location:<br>
+    <input type="text" name="location" value="{{ obj.data[0].location }}"><br><br>
+
+    Rating limit:<br>
+    <input type="text" name="ratingLimit" value="{{ obj.data[0].ratingLimit }}"><br><br>
+
+    Person limit:<br>
+    <input type="text" name="personLimit" value="{{ obj.data[0].personLimit }}"><br><br>
+
+
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}

@@ -1,0 +1,13 @@
+db:
+  user: 'your login username'
+  pw: 'your login password'
+  host: 'server name'
+  db: 'database name'
+
+tables:
+  user: 'users table'
+  tournament: 'tournaments table'
+  game: 'games table'
+  move: 'moves tale'
+  tournamentEntry: 'entries of each tournament'
+

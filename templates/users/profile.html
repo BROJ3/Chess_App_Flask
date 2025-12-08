@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Profile: {{ profile.userID }}</h1>
+
+<p>
+    <strong>Name:</strong> {{ profile.Fname }} {{ profile.Lname }}<br>
+    <strong>Email:</strong> {{ profile.email }}<br>
+    <strong>Country:</strong> {{ profile.country }}<br>
+    <strong>Rating:</strong> {{ profile.rating }}<br>
+    <strong>Title:</strong> {{ profile.title }}<br>
+</p>
+
+<h2>Stats</h2>
+<ul>
+    <li>Total games: {{ stats.total }}</li>
+    <li>Wins: {{ stats.wins }}</li>
+    <li>Losses: {{ stats.losses }}</li>
+    <li>Draws: {{ stats.draws }}</li>
+    <li>Ongoing: {{ stats.ongoing }}</li>
+</ul>
+
+<h2>Games</h2>
+{% if games %}
+<table>
+    <thead>
+        <tr>
+            <th>Review</th>
+            <th>Game ID</th>
+            <th>Date</th>
+            <th>Result</th>
+            <th>White</th>
+            <th>Black</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for g in games %}
+        <tr>
+            <td><a href="{{ url_for('game_review', gameKey=g.gameKey) }}">Review</a></td>
+            <td>{{ g.gameID }}</td>
+            <td>{{ g.date }}</td>
+            <td>{{ g.result }}</td>
+            <td>{{ g.whiteKey }}</td>
+            <td>{{ g.blackKey }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No games for this user yet.</p>
+{% endif %}
+
+<h2>Tournaments</h2>
+{% if tournaments %}
+<table>
+    <thead>
+        <tr>
+            <th>Tournament ID</th>
+            <th>Name</th>
+            <th>Location</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in tournaments %}
+        <tr>
+            <td>{{ t.tournamentID }}</td>
+            <td>{{ t.name }}</td>
+            <td>{{ t.location }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No tournaments for this user yet.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Start a new game</h1>
+
+<p>
+    You are logged in as <strong>{{ me.userID }}</strong>.
+</p>
+
+<h2>Play vs an opponent</h2>
+<table>
+    <thead>
+        <tr>
+            <th>User ID</th>
+            <th>Name</th>
+            <th>Rating</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in users %}
+        {% if u.userKey != me.userKey %}
+        <tr>
+            <td>{{ u.userID }}</td>
+            <td>{{ u.Fname }} {{ u.Lname }}</td>
+            <td>{{ u.rating }}</td>
+            <td>
+                <a href="{{ url_for('game_new_vs', opponentKey=u.userKey) }}">
+                    Start game vs this player
+                </a>
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Or play vs yourself</h2>
+<p>
+    <a href="{{ url_for('game_play_new') }}">Start a self-play game</a>
+</p>
+
+<p>
+    <a href="{{ url_for('main') }}">Back to main menu</a>
+</p>
+{% endblock %}

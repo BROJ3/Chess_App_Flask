@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<form method="GET" action="/tournaments">
+    <input type="text" name="q" placeholder="Search by ID or name"
+           value="{{ request.args.get('q','') }}">
+    <input type="submit" value="Search">
+    <a href="/tournaments">Clear</a>
+</form>
+
+<br>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tournament ID</th>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Rating limit</th>
+            <th>Person limit</th>
+            <th>Current players</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in tournaments %}
+        <tr>
+            <td>{{ t.tournamentID }}</td>
+            <td>{{ t.name }}</td>
+            <td>{{ t.location }}</td>
+            <td>{{ t.ratingLimit }}</td>
+            <td>{{ t.personLimit }}</td>
+            <td>{{ t._current_count }}</td>
+            <td>
+                {% if t._is_registered %}
+                    <a href="/tournaments/withdraw?pkval={{ t._pk }}">Withdraw</a>
+                {% elif t.personLimit is not none and t._current_count >= t.personLimit %}
+                    Full
+                {% else %}
+                    <a href="/tournaments/signup?pkval={{ t._pk }}">Sign up</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

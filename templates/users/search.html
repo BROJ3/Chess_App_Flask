@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<form method="GET" action="/users/search">
+    <input type="text" name="q" placeholder="Search by userID or email"
+           value="{{ request.args.get('q','') }}">
+    <input type="submit" value="Search">
+    <a href="/users/search">Clear</a>
+</form>
+
+<br>
+
+<table>
+    <thead>
+        <tr>
+            <th>User ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Rating</th>
+            <th>Title</th>
+            <th>Country</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in users %}
+        <tr>
+            <td><a href="{{ url_for('user_profile', userKey=u.userKey) }}">{{ u.userID }}</a></td>            
+            <td>{{ u.Fname }} {{ u.Lname }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.rating }}</td>
+            <td>{{ u.title }}</td>
+            <td>{{ u.country }}</td>
+            <td>{{ u.role }}</td>
+            <td><a href="{{ url_for('game_new_vs', opponentKey=u.userKey) }}">Start game vs this player</a></td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

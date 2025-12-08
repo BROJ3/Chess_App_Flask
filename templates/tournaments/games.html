@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Games – {{ tournament.name }}</h1>
+
+{% if games %}
+<table>
+    <thead>
+        <tr>
+            <th>Round</th>
+            <th>Action</th>
+            <th>Game ID</th>
+            <th>Date</th>
+            <th>Result</th>
+            <th>White</th>
+            <th>Black</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for g in games %}
+        {% set is_player = me and (me.userKey == g.whiteKey or me.userKey == g.blackKey) %}
+        {% set ongoing = (g.result == '*' or not g.result) %}
+        <tr>
+            <td>{{ g.round }}</td>
+            <td>
+                {% if is_player and ongoing %}
+                    <a href="{{ url_for('game_play', gameKey=g.gameKey) }}">Play</a>
+                {% else %}
+                    <a href="{{ url_for('game_review', gameKey=g.gameKey) }}">Review</a>
+                {% endif %}
+            </td>
+            <td>{{ g.gameID }}</td>
+            <td>{{ g.date }}</td>
+            <td>{{ g.result }}</td>
+            <td>{{ g.whiteID or g.whiteKey }}</td>
+            <td>{{ g.blackID or g.blackKey }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No games have been created for this tournament yet.</p>
+{% endif %}
+
+<br>
+<a href="{{ url_for('tournament_participants', pkval=tournament.tournamentKey) }}">
+    Back to participants
+</a>
+{% endblock %}

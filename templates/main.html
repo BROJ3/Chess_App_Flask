@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="main">
+        <h1>Main menu</h1>
+        <div id="menumsg">
+            Hello, {{ me.userID }} ({{ me.email }}, {{ me.role }})
+        </div>
+        <br><br>
+    
+        <h2>User options</h2>
+        <ul>
+            <li><a href="/users/search">Search & view users</a></li>
+            <li><a href="/tournaments">Search & view tournaments / sign up / withdraw</a></li>
+            <li><a href="/games/new">Start a new game (web UI)</a><br></li>
+            <li><a href="/games">Review games</a><br></li>
+    
+    
+        </ul>
+    
+        {% if me.role == 'admin' %}
+        <h2>Admin options</h2>
+        <ul>
+            <li><a href="/users/manage">Search / Create / edit / delete users</a></li>
+            <li><a href="/tournaments/manage">View / Create / edit / delete tournaments</a></li>
+        </ul>
+        {% endif %}
+    
+        <a href="/logout">Logout</a><br>
+    </div>
+
+{% endblock %}

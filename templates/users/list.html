@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Users</h1>
+
+<form method="GET" action="{{ url_for('manage_user') }}">
+    <input type="text" name="q" placeholder="Search by userID or email"
+           value="{{ request.args.get('q','') }}">
+    <input type="submit" value="Search">
+    <a href="{{ url_for('manage_user') }}">Clear</a>
+</form>
+
+<br>
+
+<div>
+    <div><a href="{{ url_for('manage_user', pkval='new') }}">Create new user</a></div>
+    <br>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Edit</th>
+                <th>Delete</th>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Rating</th>
+                <th>Role</th>
+                <th>Play</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in obj.data %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('manage_user', pkval=row[obj.pk]) }}">Edit</a>
+                </td>
+                <td>
+                    <a href="{{ url_for('manage_user', pkval=row[obj.pk], action='delete') }}"
+                       onclick="return confirm('Delete this user?');">
+                       Delete
+                    </a>
+                </td>
+                <td><a href="{{ url_for('user_profile', userKey=row.userKey) }}">{{ row.userID }}</a></td>
+                <td>{{ row.Fname }} {{ row.Lname }}</td>
+                <td>{{ row.email }}</td>
+                <td>{{ row.rating }}</td>
+                <td>{{ row.role }}</td>
+                <td>
+                    <a href="{{ url_for('game_new_vs', opponentKey=row[obj.pk]) }}">
+                        Start game vs this player
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

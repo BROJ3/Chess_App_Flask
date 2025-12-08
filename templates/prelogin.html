@@ -1,0 +1,25 @@
+{% extends "loginbase.html" %}
+
+{% block content %}
+    <h1>Login</h1>
+	{% if msg %}
+      <div id="loginmsg">
+	 
+		{{ msg }}
+	 
+	  </div>
+    {% endif %}
+		
+	<form action="login" method="POST">
+		Username:<br>
+		<input type="text" name="name" value="carlsen@chess.com"/><br><br>
+		
+		Password:<br>
+		<input type="password" name="password" value="123" /><br><br>
+		
+		
+		<input type="submit" value="Login"/>
+
+	</form>
+		
+{% endblock %}

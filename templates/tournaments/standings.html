@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Standings – {{ tournament.name }}</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Score</th>
+            <th>W</th>
+            <th>D</th>
+            <th>L</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in standings %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ s.userID }} ({{ s.name }})</td>
+            <td>{{ '%.1f'|format(s.points) }}</td>
+            <td>{{ s.wins }}</td>
+            <td>{{ s.draws }}</td>
+            <td>{{ s.losses }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<br>
+<a href="{{ url_for('tournament_participants', pkval=tournament[tournament.pk] if tournament.pk is defined else tournament.tournamentKey) }}">
+    Back to participants
+</a>
+{% endblock %}

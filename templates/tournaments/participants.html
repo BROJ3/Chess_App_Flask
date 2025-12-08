@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Participants for {{ tournament.name }}</h1>
+
+<p><strong>Tournament ID:</strong> {{ tournament.tournamentID }}</p>
+<p><strong>Location:</strong> {{ tournament.location }}</p>
+<p><strong>Rating limit:</strong> {{ tournament.ratingLimit }}</p>
+<p><strong>Person limit:</strong> {{ tournament.personLimit }}</p>
+
+{% if me.role == 'admin' and participants|length >= 2 %}
+<form method="POST" action="{{ url_for('tournament_start') }}">
+    <input type="hidden" name="pkval" value="{{ tournament.tournamentKey }}">
+    <button type="submit">Start tournament (create pairings)</button>
+</form>
+<br>
+{% endif %}
+
+<br>
+
+
+<p>
+    <a href="{{ url_for('tournament_games', pkval=tournament.tournamentKey) }}">
+        View games for this tournament
+    </a>
+</p>
+<br>
+
+<p>
+    <a href="{{ url_for('tournament_standings', pkval=tournament.tournamentKey) }}">
+        View standings
+    </a>
+</p>
+
+
+<br>
+
+{% if participants|length == 0 %}
+    <p>No participants registered yet.</p>
+{% else %}
+<table>
+    <thead>
+        <tr>
+            <th>User ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Rating</th>
+            <th>Title</th>
+            <th>Country</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for p in participants %}
+        <tr>
+            <td>{{ p.userID }}</td>
+            <td>{{ p.Fname }} {{ p.Lname }}</td>
+            <td>{{ p.email }}</td>
+            <td>{{ p.rating }}</td>
+            <td>{{ p.title }}</td>
+            <td>{{ p.country }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<br>
+<a href="/tournaments/manage">Back to tournaments</a>
+{% endblock %}
