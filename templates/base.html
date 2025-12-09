@@ -1,14 +1,35 @@
-<html>
-        <head>
-            <title>App</title>
-            <link rel="stylesheet" type="text/css" href="/static/style.css">
-            <script src='/static/plotly-2.35.2.min.js'></script>
-        </head>
-        <body>
-            <!--<img src="static/test.jpg" />-->
-            <div> <a href="/main">Main menu</a> </div><br><br>
-		
-		{% block content %}{% endblock %}
-		
-		</body>
-    </html>
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Chess App{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="/static/plotly-2.35.2.min.js"></script>
+</head>
+
+<body class="theme-green">
+
+
+
+<body class="theme-green">
+    <header>
+        <nav>
+            <a href="/main">Main menu</a>
+            <a href="/games">Games</a>
+            <a href="/tournaments">Tournaments</a>
+            <a href="/users/search">Users</a>
+        </nav>
+    </header>
+    <div class="page-container">
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+    <footer>
+        © 2025 Chess App. All rights reserved.
+    </footer>
+</body>
+</html>

@@ -1,0 +1,330 @@
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0% 0%;
+    box-sizing: border-box;
+
+    padding: 0%;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.5;
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+/* Containers */
+main {
+    max-width: 1000px;
+    /*margin: 0 auto;*/
+    padding: 1.5rem;
+}
+
+/* Header styling */
+header {
+    padding: 1rem 0;
+    background-color: var(--accent-bg);
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 1.5rem;
+}
+
+header nav a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.2s ease-in-out;
+}
+
+header nav a:hover {
+    opacity: 0.8;
+}
+
+/* Footer styling */
+footer {
+    padding: 1rem 0;
+    background-color: #eaeaea;
+    color: #666;
+    text-align: center;
+    font-size: 0.9rem;
+    border-top: 1px solid #d4d4d4;
+    margin-top: 2rem;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+}
+
+th, td {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+thead {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+tbody tr:hover {
+    background-color: #f2f9f2;
+}
+
+/* Form elements */
+form {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="email"],
+select, textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    margin-bottom: 1rem;
+}
+
+input[type="submit"],
+button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--accent-bg);
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+input[type="submit"]:hover,
+button:hover {
+    background-color: var(--accent-bg-hover);
+}
+
+a {
+    color: var(--accent-text);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1, h2, h3, h4 {
+    margin-top: 0;
+    font-weight: 600;
+    color: #222;
+}
+
+/* Flash messages */
+.flash-msg {
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.flash-error {
+    background-color: #fdecea;
+    color: #a94442;
+    border: 1px solid #f5c6cb;
+}
+
+.flash-info {
+    background-color: #e7f5ff;
+    color: #31708f;
+    border: 1px solid #b8daff;
+}
+
+/*
+/* Chess board box used in game_play and game_review */
+.chess-board-box {
+    background: #222;
+    color: #eee;
+    padding: 12px 16px;
+    display: inline-block;
+    border-radius: 8px;
+    border: 2px solid #555;
+    font-family: "Courier New", monospace;
+    font-size: 16px;
+    line-height: 1.1;   /* tighter, keeps rows aligned */
+    margin-bottom: 1rem;
+}
+
+
+.status-bar {
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.status-bar strong {
+    color: var(--accent-text);
+}
+
+.nav-buttons a {
+    margin-right: 0.5rem;
+    text-decoration: none;
+    color: var(--accent-text);
+    font-weight: 600;
+}
+
+.nav-buttons a.disabled {
+    color: #888;
+    pointer-events: none;
+}
+
+/* Error text used in forms */
+.error_text {
+    color: #a94442;
+    margin-bottom: 1rem;
+}
+
+/* Details (used for PGN) */
+details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent-text);
+    margin-bottom: 0.5rem;
+}
+
+details pre {
+    background-color: #fafafa;
+    padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    overflow: auto;
+}
+
+/* Themes */
+
+/* Default variables for the green theme */
+:root {
+    --accent-bg: #2d7a36;
+    --accent-bg-hover: #25632d;
+    --accent-text: #2d7a36;
+}
+
+.theme-green {
+    --accent-bg: #2d7a36;
+    --accent-bg-hover: #25632d;
+    --accent-text: #2d7a36;
+}
+
+/* Blue theme – an alternative option */
+.theme-blue {
+    --accent-bg: #2b5c8a;
+    --accent-bg-hover: #21486a;
+    --accent-text: #2b5c8a;
+}
+
+/* Apply default theme to body when no explicit theme class is present */
+body:not(.theme-blue):not(.theme-green) {
+    --accent-bg: #2d7a36;
+    --accent-bg-hover: #25632d;
+    --accent-text: #2d7a36;
+}
+
+/* Utility classes */
+.text-center {
+    text-align: center;
+}
+
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+
+/* Main container that centers content and limits page width */
+.page-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* spacing between content blocks */
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: #fff;
+    padding: 16px 22px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+
+
+/* ===========================
+   Two-column layout helpers
+   =========================== */
+
+   .layout-two-col {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 24px;
+    max-width: 1100px;
+    margin: 24px auto 40px auto;   /* center in page */
+}
+
+.col-left,
+.col-right {
+    flex: 2.5;
+}
+
+/* Slight bias: left column a bit wider */
+.col-left {
+    flex: 1.1;
+}
+.col-right {
+    flex: 0.9;
+}
+
+/* Card-style content blocks */
+.card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 18px 22px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    box-sizing: border-box;
+}
+
+/* If you want the whole page content in a card, you can reuse .card */
+
+/* Responsive: stack columns on small screens */
+@media (max-width: 900px) {
+    .layout-two-col {
+        flex-direction: column;
+    }
+}
+
+
+.layout-two-col .col-right:empty {
+    display: none;
+}
