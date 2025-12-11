@@ -1,79 +1,79 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="error_text">
-    {% if obj.errors | length > 0 %}
-        {% for error in obj.errors %}
-            <div>{{ error }}</div>
-        {% endfor %}
-    {% endif %}
-</div>
 
-<div>
-    <form action="{{ url_for('manage_user', action='update', pkval=obj.data[0][obj.pk]) }}"
-          method="POST">
+<div class="layout-two-col">
+    <div class="col-left">
+        <div class="card form-narrow">
 
-        User ID:<br>
-        <input type="text" name="userID" value="{{ obj.data[0].userID }}" />
-        <br><br>
+            <h1>Edit user</h1>
 
-        First name:<br>
-        <input type="text" name="Fname" value="{{ obj.data[0].Fname }}" />
-        <br><br>
+            {% if obj.errors and obj.errors|length > 0 %}
+            <div class="error_text">
+                <ul>
+                    {% for error in obj.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
 
-        Last name:<br>
-        <input type="text" name="Lname" value="{{ obj.data[0].Lname }}" />
-        <br><br>
+            {% set row = obj.data[0] %}
 
-        Email:<br>
-        <input type="text" name="email" value="{{ obj.data[0].email }}" />
-        <br><br>
+            <form action="{{ url_for('manage_user', action='update', pkval=row[obj.pk]) }}"
+                  method="POST">
 
-        Country (3-letter code):<br>
-        <input type="text" name="country" value="{{ obj.data[0].country }}" />
-        <br><br>
+                <label>User ID:</label>
+                <input type="text" name="userID" value="{{ row.userID }}" />
 
-        Date of Birth (YYYY-MM-DD):<br>
-        <input type="date" name="DOB" value="{{ obj.data[0].DOB }}" />
-        <br><br>
+                <label>First name:</label>
+                <input type="text" name="Fname" value="{{ row.Fname }}" />
 
-        Rating:<br>
-        <input type="text" name="rating" value="{{ obj.data[0].rating }}" />
-        <br><br>
+                <label>Last name:</label>
+                <input type="text" name="Lname" value="{{ row.Lname }}" />
 
-        Title (e.g. GM, IM, NM):<br>
-        <input type="text" name="title" value="{{ obj.data[0].title }}" />
-        <br><br>
+                <label>Email:</label>
+                <input type="text" name="email" value="{{ row.email }}" />
 
-        Role:<br>
-        <select name="role">
-            {% for role in obj.roles %}
-                {% if obj.data[0].role == role.value %}
-                    <option selected="true" value="{{ role.value }}">{{ role.text }}</option>
-                {% else %}
-                    <option value="{{ role.value }}">{{ role.text }}</option>
-                {% endif %}
-            {% endfor %}
-        </select>
-        <br><br>
+                <label>Country (3-letter code):</label>
+                <input type="text" name="country" value="{{ row.country }}" />
 
-        Password (leave blank to keep current):<br>
-        <input type="password" name="password" value="" />
-        <br><br>
+                <label>Date of Birth (YYYY-MM-DD):</label>
+                <input type="date" name="DOB" value="{{ row.DOB }}" />
 
-        Retype Password:<br>
-        <input type="password" name="password2" value="" />
-        <br><br>
+                <label>Rating:</label>
+                <input type="text" name="rating" value="{{ row.rating }}" />
 
-        <input type="submit" value="Submit" />
-    </form>
+                <label>Title (e.g. GM, IM, NM):</label>
+                <input type="text" name="title" value="{{ row.title }}" />
 
-    <div>
-        <br><br>
-        <a href="{{ url_for('manage_user', pkval=obj.data[0][obj.pk], action='delete') }}"
-           onclick="return confirm('Delete this user?');">
-            Delete this User
-        </a>
+                <label>Role:</label>
+                <select name="role">
+                    {% for role in obj.roles %}
+                        {% if row.role == role.value %}
+                            <option selected="true" value="{{ role.value }}">{{ role.text }}</option>
+                        {% else %}
+                            <option value="{{ role.value }}">{{ role.text }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+
+                <label>Password (leave blank to keep current):</label>
+                <input type="password" name="password" value="" />
+
+                <label>Retype Password:</label>
+                <input type="password" name="password2" value="" />
+
+                <div class="btn-row">
+                    <input type="submit" value="Submit" class="btn-primary" />
+
+                </div>
+            </form>
+
+        </div>
     </div>
+
+    <div class="col-right"></div>
 </div>
+
 {% endblock %}

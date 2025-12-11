@@ -1,31 +1,28 @@
 {% extends "loginbase.html" %}
 
 {% block content %}
-<div class="layout-two-col">
-    <div class="col-left">
-        <div class="card">
-            <h1>Login</h1>
+<div class="card" id= "logincard">
+    <h1>Login</h1>
 
-            {% if msg %}
-              <div id="loginmsg">
-                    {{ msg }}
-              </div>
-            {% endif %}
-
-            <form action="login" method="POST">
-                Username:<br>
-                <input type="text" name="name" value="carlsen@chess.com"/><br><br>
-
-                Password:<br>
-                <input type="password" name="password" value="123" /><br><br>
-
-                <input type="submit" value="Login"/>
-            </form>
-        </div>
+    {% if msg %}
+    <div id="loginmsg">
+        {{ msg }}
     </div>
+    {% endif %}
 
-    <div class="col-right">
-        <!-- Optional: tips, logo, anything later -->
-    </div>
+    <form action="login" method="POST">
+        Username:<br>
+        <input type="text" name="name" value="tc@admin" /><br><br>
+
+        Password:<br>
+        <input type="password" name="password" value="123" /><br><br>
+
+        <input type="submit" value="Login" />
+    </form>
+    <p class="signup-link">
+        Don’t have an account?
+        <a href="{{ url_for('sign_up') }}">Sign up!</a>
+    </p>
 </div>
+
 {% endblock %}

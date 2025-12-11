@@ -5,7 +5,6 @@ from flask_session import Session
 from datetime import timedelta
 from user import user
 import time
-from user import user
 from tournament import tournament
 from tournament_entry import tournamentEntry
 from game import game
@@ -65,15 +64,12 @@ def maybe_advance_knockout_round(tournamentKey):
 
         if decisive:
             winners.append(decisive)
-            continue  # Next pairing
+            continue  
 
-        # If all games for this pairing are draws → create tiebreak
         all_draws = all(row.get("result") == "0.5-0.5" for row in games)
 
         if all_draws:
-            # Create a new tiebreak game in the same round
             new_game = game()
-            # Alternate colors for fairness
             if len(games) % 2 == 0:
                 white, black = wk, bk
             else:
@@ -99,7 +95,7 @@ def maybe_advance_knockout_round(tournamentKey):
     next_round = max_round + 1
 
 
-    random.shuffle(winners)  # Optional: randomize seeding
+    random.shuffle(winners) 
 
     new_round = game()
     for i in range(0, len(winners), 2):
@@ -112,39 +108,27 @@ def maybe_advance_knockout_round(tournamentKey):
             round=next_round
         )
 
-    # Reload games and return
     g.cur.execute(sql_all, [tournamentKey])
     return [row for row in g.cur]
 
 
 
 def maybe_create_final_for_tournament(tournamentKey):
-    """
-    If all existing games for this tournament are finished and there are
-    at least 2 players, automatically create a final between the top 2
-    scorers (if such a final does not already exist).
-
-    Returns the updated list of games for that tournament.
-    """
     g = game()
 
-    # Load all games for this tournament
     sql_games = f"SELECT * FROM `{g.tn}` WHERE `tournamentKey` = %s;"
     g.cur.execute(sql_games, [tournamentKey])
     games = [row for row in g.cur]
 
     if not games:
-        # No games yet -> nothing to base a final on
         return games
 
-    # If ANY game is not finished yet, don't create a final
     unfinished = [row for row in games
                   if row.get('result') in (None, '', '*')]
     if unfinished:
         return games
 
-    # --- Compute scores per player (1 = win, 0.5 = draw, 0 = loss) ---
-    stats = {}  # userKey -> dict
+    stats = {} 
     def ensure_player(uk):
         if uk is None:
             return
@@ -177,13 +161,10 @@ def maybe_create_final_for_tournament(tournamentKey):
                 stats[whiteKey]["points"] += 0.5
             if blackKey in stats:
                 stats[blackKey]["points"] += 0.5
-        # ignore other results
 
     if len(stats) < 2:
-        # Not enough distinct players to make a final
         return games
 
-    # Sort players by score (desc), tie-break by userKey
     standings = sorted(
         stats.values(),
         key=lambda s: (-s["points"], s["userKey"])
@@ -192,26 +173,21 @@ def maybe_create_final_for_tournament(tournamentKey):
     top1 = standings[0]["userKey"]
     top2 = standings[1]["userKey"]
 
-    # If there is only ONE game total and it's already between these two,
-    # we treat that as the "final" for small tournaments (2 players).
+
     if len(games) == 1:
         r = games[0]
         if {r.get('whiteKey'), r.get('blackKey')} == {top1, top2}:
-            return games  # already a head-to-head tournament
+            return games 
 
-    # Check if a game between top1 and top2 already exists (any result)
     for row in games:
         wk = row.get('whiteKey')
         bk = row.get('blackKey')
         if {wk, bk} == {top1, top2}:
-            # A game between them already exists (likely the final)
             return games
 
-    # --- Create the final game between top1 and top2 ---
     g_final = game()
     g_final.start_game(top1, top2, tournamentKey=tournamentKey)
 
-    # Reload games including the new final
     g.cur.execute(sql_games, [tournamentKey])
     games = [row for row in g.cur]
     return games
@@ -272,7 +248,6 @@ def games_list():
     term = request.args.get('q', '').strip()
     rows = []
 
-    # Admin: can see everything
     if role == 'admin':
         if term:
             like = f"%{term}%"
@@ -283,7 +258,6 @@ def games_list():
             g.getAll(order='`date` ASC')
             rows = g.data
     else:
-        # Non-admin: only see games where you're white or black
         if not me:
             return redirect('/login')
 
@@ -326,7 +300,6 @@ def build_board_from_moves(moves_rows):
             move_obj = board.parse_san(san)
             board.push(move_obj)
         except Exception:
-            # If any bad SAN ever slipped in, skip instead of crashing
             continue
     return board
 
@@ -335,7 +308,7 @@ def board_to_pretty_ascii(board):
     """
     Turn the board into a nicer text representation with ranks/files labels.
     """
-    rows = str(board).split('\n')  # standard 8 lines like "r n b q k b n r"
+    rows = str(board).split('\n')  
     lines = []
     for i, row in enumerate(rows):
         rank = 8 - i
@@ -376,12 +349,10 @@ def game_new_vs(opponentKey):
     if not me:
         return redirect('/login')
 
-    # get current user's primary-key field name
     u_obj = user()
     user_pk = u_obj.pk
     my_key = me[user_pk]
 
-    # White = current user, Black = opponent
     whiteKey = my_key
     blackKey = opponentKey
 
@@ -405,7 +376,6 @@ def game_review(gameKey):
 
     game_row = g.data[0]
 
-    # Load moves in order
     m = move()
     sql = f"SELECT * FROM `{m.tn}` WHERE `gameKey` = %s ORDER BY `{m.pk}` ASC;"
     m.cur.execute(sql, [gameKey])
@@ -423,7 +393,6 @@ def game_review(gameKey):
     if ply > total_moves:
         ply = total_moves
 
-    # Rebuild board up to this ply
     board = chess.Board()
     for i, mv in enumerate(moves_rows[:ply]):
         san = mv['move']
@@ -435,18 +404,15 @@ def game_review(gameKey):
 
     board_ascii = board_to_pretty_ascii(board)
 
-    # Side to move / game over text
     result = game_row.get('result')
     if result not in (None, '', '*') and ply == total_moves:
         side_to_move = f"Game over (result: {result})"
     else:
         side_to_move = "White" if board.turn == chess.WHITE else "Black"
 
-    # Navigation indices
     prev_ply = ply - 1 if ply > 0 else 0
     next_ply = ply + 1 if ply < total_moves else total_moves
 
-    # Still build PGN (nice to have, but now shown compactly)
     g2 = game()
     pgn_str, fens = g2.build_pgn_and_fens(game_row, moves_rows)
 
@@ -467,11 +433,7 @@ def game_review(gameKey):
 
 
 def get_game_state_from_db(gameKey):
-    """
-    Load a game + its moves from the DB and rebuild the board + FENs.
 
-    Returns: (game_row, moves_rows, fens, board) or (None, None, None, None)
-    """
     g = game()
     g.getById(gameKey)
     if not g.data:
@@ -491,10 +453,8 @@ def get_game_state_from_db(gameKey):
             move_obj = board.parse_san(san)
             board.push(move_obj)
         except Exception:
-            # if a bad SAN ever slips in, skip it instead of crashing
             continue
 
-    # reuse existing helper to get PGN + FENs
     pgn_str, fens = g.build_pgn_and_fens(game_row, moves_rows)
 
     return game_row, moves_rows, fens, board
@@ -502,15 +462,10 @@ def get_game_state_from_db(gameKey):
 
 @app.route('/games/play/<int:gameKey>', methods=['GET', 'POST'])
 def game_play(gameKey):
-    """
-    Web 'play' UI:
-      - only white/black can move, and only on their turn
-      - after any SUCCESSFUL change, redirects (PRG) so polling reloads are GETs
-    """
+
     if checkSession() == False:
         return redirect('/login')
 
-    # Load game row
     g = game()
     g.getById(gameKey)
     if not g.data:
@@ -518,26 +473,23 @@ def game_play(gameKey):
 
     game_row = g.data[0]
 
-    # Load moves
     m = move()
     sql = f"SELECT * FROM `{m.tn}` WHERE `gameKey` = %s ORDER BY `{m.pk}` ASC;"
     m.cur.execute(sql, [gameKey])
     moves_rows = [row for row in m.cur]
 
     error = None
-    info = None  # kept in case you want to show messages later
-
+    info = None  
+    
     if request.method == 'POST':
         command = request.form.get('command')
         san = (request.form.get('san') or '').strip()
 
-        # Rebuild board from existing moves
         board = build_board_from_moves(moves_rows)
 
         current_result = game_row.get('result')
         game_over = current_result not in (None, '', '*')
-        status = game_row.get('status') or 'active'   # for future use
-
+        status = game_row.get('status') or 'active'  
         # Who is logged in?
         me = session.get('user')
         current_user_key = None
@@ -548,7 +500,6 @@ def game_play(gameKey):
         whiteKey = game_row.get('whiteKey')
         blackKey = game_row.get('blackKey')
 
-        # ---- Permission / state checks ----
         if game_over:
             error = (
                 f"Game is already over (result: {current_result}). "
@@ -567,24 +518,18 @@ def game_play(gameKey):
             elif (not is_white_turn) and current_user_key != blackKey:
                 error = "It is Black's turn; only Black may move or resign."
             else:
-                # ---- PERMISSION OK: apply commands ----
 
-                # RESIGN
                 if command == 'resign':
                     made_by = 'W' if board.turn == chess.WHITE else 'B'
                     result_code = '0-1' if made_by == 'W' else '1-0'
                     set_game_result(gameKey, result_code)
-                    # info = f"Player {made_by} resigned. Result set to {result_code}."
                     return redirect(url_for('game_play', gameKey=gameKey))
 
-                # DIRECT RESULT
                 elif san.lower() in ['1-0', '0-1', '0.5-0.5']:
                     result_code = san.lower()
                     set_game_result(gameKey, result_code)
-                    # info = f"Game result set to {result_code}."
                     return redirect(url_for('game_play', gameKey=gameKey))
 
-                # NORMAL MOVE
                 elif san:
                     try:
                         move_obj = board.parse_san(san)
@@ -595,27 +540,21 @@ def game_play(gameKey):
                         m_new = move()
                         m_new.add_move(gameKey, san, made_by)
 
-                        # SUCCESS: redirect so the page becomes a GET
                         return redirect(url_for('game_play', gameKey=gameKey))
 
                     except Exception as e:
-                        # Illegal move: stay on this page (no redirect),
-                        # so the user sees the error and can correct it.
+ 
                         error = f"Illegal move: {e}"
                 else:
                     error = "Please enter a move in SAN notation or use the resign button."
 
-        # If we got here WITHOUT redirect, either it was an error or no change.
-        # Reload latest game row for accurate display.
         g.getById(gameKey)
         if g.data:
             game_row = g.data[0]
 
-        # Also reload moves if needed (for error display / consistency)
         m.cur.execute(sql, [gameKey])
         moves_rows = [row for row in m.cur]
 
-    # --- GET or POST-with-error: render page ---
     board = build_board_from_moves(moves_rows)
     board_ascii = board_to_pretty_ascii(board)
 
@@ -651,14 +590,12 @@ def tournament_start():
     if not pkval:
         return render_template('ok_dialog.html', msg="Tournament not specified.")
 
-    # Load tournament
     t = tournament()
     t.getById(pkval)
     if not t.data:
         return render_template('ok_dialog.html', msg="Tournament not found.")
     trow = t.data[0]
 
-    # Check if it already has games
     g = game()
     sql_games = f"SELECT COUNT(*) AS cnt FROM `{g.tn}` WHERE `tournamentKey` = %s;"
     g.cur.execute(sql_games, [pkval])
@@ -667,7 +604,6 @@ def tournament_start():
         return render_template('ok_dialog.html', 
                                msg="This tournament already has games. (You can add more later if needed.)")
 
-    # Get participants
     te = tournamentEntry()
     entries = te.get_for_tournament(pkval)
     player_keys = [e['userKey'] for e in entries]
@@ -676,7 +612,6 @@ def tournament_start():
         return render_template('ok_dialog.html', msg="Need at least 2 players to start a tournament.")
 
     n = len(player_keys)
-    # require n = 2,4,8,16,... (single-elim bracket)
     if n & (n - 1) != 0:
         return render_template(
             'ok_dialog.html',
@@ -711,14 +646,12 @@ def tournament_standings():
     if not pkval:
         return render_template('ok_dialog.html', msg="Tournament not specified.")
 
-    # Load tournament
     t = tournament()
     t.getById(pkval)
     if not t.data:
         return render_template('ok_dialog.html', msg="Tournament not found.")
     trow = t.data[0]
 
-    # Participants + user info
     te = tournamentEntry()
     u = user()
 
@@ -735,7 +668,6 @@ def tournament_standings():
     te.cur.execute(sql_participants, [pkval])
     participants = [row for row in te.cur]
 
-    # Initialise stats
     stats = {}
     for p in participants:
         uk = p['userKey']
@@ -749,13 +681,11 @@ def tournament_standings():
             "losses": 0,
         }
 
-    # Read games in this tournament
     g = game()
     sql_games = f"SELECT * FROM `{g.tn}` WHERE `tournamentKey` = %s;"
     g.cur.execute(sql_games, [pkval])
     games = [row for row in g.cur]
 
-    # Update scores
     for row in games:
         result = row.get('result')
         whiteKey = row.get('whiteKey')
@@ -783,9 +713,6 @@ def tournament_standings():
                 stats[blackKey]["points"] += 0.5
                 stats[blackKey]["draws"] += 1
 
-        # ignore result '*' or None: game not finished yet
-
-    # Sort by points descending, then by userID
     standings = sorted(
         stats.values(),
         key=lambda s: (-s["points"], s["userID"])
@@ -803,10 +730,7 @@ def tournament_standings():
 
 @app.route('/games/new')
 def games_new_choose():
-    """
-    Let the logged-in user choose an opponent (or play vs self)
-    before we actually create the game.
-    """
+
     if checkSession() == False:
         return redirect('/login')
 
@@ -816,7 +740,6 @@ def games_new_choose():
 
     u = user()
 
-    # Load all player-type users (you can adjust this filter if you want)
     sql = f"SELECT * FROM `{u.tn}` WHERE `role` = %s ORDER BY `userID` ASC;"
     u.cur.execute(sql, ['player'])
     users = [row for row in u.cur]
@@ -895,11 +818,9 @@ def api_game_add_move(gameKey):
     if game_row is None:
         return jsonify({"success": False, "error": "Game not found."}), 404
 
-    # Optional: prevent moves if result is already set
     if game_row.get("result") and game_row["result"] != "*":
         return jsonify({"success": False, "error": "Game already finished."}), 400
 
-    # --- NEW: who is making the move? ---
     me = session.get('user')
     u_obj = user()
     user_pk = u_obj.pk
@@ -915,11 +836,8 @@ def api_game_add_move(gameKey):
     if not is_white_turn and current_user_key != blackKey:
         return jsonify({"success": False, "error": "It is Black's turn."}), 403
 
-    # Whose turn is it?
     made_by = "W" if board.turn == chess.WHITE else "B"
 
-
-    # validate SAN against current board
     try:
         move_obj = board.parse_san(san)
     except Exception as e:
@@ -927,11 +845,9 @@ def api_game_add_move(gameKey):
 
     board.push(move_obj)
 
-    # store in DB
     m_obj = move()
     m_obj.add_move(gameKey, san, made_by)
 
-    # rebuild state to send back
     game_row, moves_rows, fens, board = get_game_state_from_db(gameKey)
 
     return jsonify({
@@ -960,25 +876,17 @@ def manage_user():
     action = request.args.get('action')
     pkval = request.args.get('pkval')
 
-    # --------------------
-    # DELETE
-    # --------------------
     if action == 'delete' and pkval is not None:
         o.deleteById(pkval)
         return render_template('ok_dialog.html', msg=f"User ID {pkval} deleted.")
 
-    # --------------------
-    # INSERT (new user)
-    # --------------------
     if action == 'insert':
         d = {}
 
-        # Core identification fields
         d['userID'] = (request.form.get('userID') or '').strip()
         d['Fname'] = (request.form.get('Fname') or '').strip()
         d['Lname'] = (request.form.get('Lname') or '').strip()
 
-        # Contact / meta
         d['email'] = (request.form.get('email') or '').strip()
         d['country'] = (request.form.get('country') or '').strip().upper()
         d['DOB'] = request.form.get('DOB') or None
@@ -989,7 +897,6 @@ def manage_user():
         d['title'] = (request.form.get('title') or '').strip()
         d['role'] = request.form.get('role')
 
-        # Passwords
         d['password'] = request.form.get('password') or ''
         d['password2'] = request.form.get('password2') or ''
 
@@ -1002,20 +909,14 @@ def manage_user():
                 msg=f"User {o.data[0]['userID']} added."
             )
         else:
-            # show form again with errors
             return render_template('users/add.html', obj=o)
 
-    # --------------------
-    # UPDATE (existing user)
-    # --------------------
     if action == 'update' and pkval is not None:
         o.getById(pkval)
         if not o.data:
             return render_template('ok_dialog.html', msg="User not found.")
 
         row = o.data[0]
-
-        # Update base fields from form
         row['userID'] = (request.form.get('userID') or row.get('userID', '')).strip()
         row['Fname'] = (request.form.get('Fname') or row.get('Fname', '')).strip()
         row['Lname'] = (request.form.get('Lname') or row.get('Lname', '')).strip()
@@ -1029,12 +930,10 @@ def manage_user():
                 row['rating'] = int(rating_str)
             except ValueError:
                 row['rating'] = row.get('rating')
-        # if left blank, keep old rating
 
         row['title'] = (request.form.get('title') or row.get('title', '')).strip()
         row['role'] = request.form.get('role') or row.get('role')
 
-        # Only touch password if user actually typed something
         pw = request.form.get('password') or ''
         pw2 = request.form.get('password2') or ''
         if pw or pw2:
@@ -1076,7 +975,6 @@ def manage_user():
         }]
         return render_template('users/add.html', obj=o)
 
-    # EDIT EXISTING
     o.getById(pkval)
     if not o.data:
         return render_template('ok_dialog.html', msg="User not found.")
@@ -1119,7 +1017,6 @@ def tournament_participants():
 
     trow = t.data[0]
 
-    # get participants
     te = tournamentEntry()
     entries = te.get_for_tournament(pkval)
 
@@ -1145,7 +1042,6 @@ def tournaments_user():
     if not me:
         return redirect('/login')
 
-    # get current user's PK value
     u_obj = user()
     user_pk = u_obj.pk
     user_id = me[user_pk]
@@ -1192,14 +1088,12 @@ def user_profile(userKey):
     if checkSession() == False:
         return redirect('/login')
 
-    # --- Load basic user info ---
     u = user()
     u.getById(userKey)
     if not u.data:
         return render_template('ok_dialog.html', msg="User not found.")
     profile = u.data[0]
 
-    # --- Load all games this user has played ---
     g = game()
     sql_games = f"""
         SELECT * FROM `{g.tn}`
@@ -1209,7 +1103,6 @@ def user_profile(userKey):
     g.cur.execute(sql_games, [userKey, userKey])
     games = [row for row in g.cur]
 
-    # --- Compute simple stats ---
     total = len(games)
     wins = losses = draws = ongoing = 0
     for row in games:
@@ -1240,7 +1133,6 @@ def user_profile(userKey):
         "ongoing": ongoing,
     }
 
-    # --- Tournaments this user is registered in ---
     t = tournament()
     te = tournamentEntry()
 
@@ -1348,17 +1240,14 @@ def main():
     me = session.get('user')
     return render_template('main.html', title='Main menu', me=me)
 
-# endpoint route for static files
 @app.route('/static/<path:path>')
 def send_static(path):
     return send_from_directory('static', path)
 
 
-#standalone function to be called when we need to check if a user is logged in.
 def checkSession():
     if 'active' in session.keys():
         timeSinceAct = time.time() - session['active']
-        #print(timeSinceAct)
         if timeSinceAct > 500:
             session['msg'] = 'Your session has timed out.'
             return False
@@ -1367,9 +1256,6 @@ def checkSession():
             return True
     else:
         return False  
-
-
-
 
 @app.route('/tournaments/manage', methods=['GET', 'POST'])
 def manage_tournament():
@@ -1493,17 +1379,14 @@ def tournament_games():
     if not pkval:
         return render_template('ok_dialog.html', msg="Tournament not specified.")
 
-    # Load tournament
     t = tournament()
     t.getById(pkval)
     if not t.data:
         return render_template('ok_dialog.html', msg="Tournament not found.")
     trow = t.data[0]
 
-    # Advance bracket if possible
     all_games = maybe_advance_knockout_round(pkval)
 
-    # Reload games with player names for display
     g = game()
     u = user()
     sql = f"""
@@ -1525,9 +1408,6 @@ def tournament_games():
         tournament=trow,
         games=games_with_names,
     )
-
-
-
 
 if __name__ == '__main__':
    app.run(host='0.0.0.0',debug=True)   

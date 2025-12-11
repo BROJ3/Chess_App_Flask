@@ -1,27 +1,63 @@
-
 * {
     box-sizing: border-box;
 }
 
 html, body {
-    margin: 0% 0%;
-    box-sizing: border-box;
-
-    padding: 0%;
+    margin: 0;
+    padding: 0;
     font-family: Arial, Helvetica, sans-serif;
     line-height: 1.5;
     background-color: #f7f7f7;
     color: #333;
 }
 
-/* Containers */
 main {
     max-width: 1000px;
-    /*margin: 0 auto;*/
     padding: 1.5rem;
 }
 
-/* Header styling */
+:root {
+    --accent-bg: #2d7a36;
+    --accent-bg-hover: #25632d;
+    --accent-text: #2d7a36;
+}
+
+.theme-green {
+    --accent-bg: #2d7a36;
+    --accent-bg-hover: #25632d;
+    --accent-text: #2d7a36;
+}
+
+.theme-blue {
+    --accent-bg: #2b5c8a;
+    --accent-bg-hover: #21486a;
+    --accent-text: #2b5c8a;
+}
+
+body:not(.theme-blue):not(.theme-green) {
+    --accent-bg: #2d7a36;
+    --accent-bg-hover: #25632d;
+    --accent-text: #2d7a36;
+}
+
+h1, h2, h3, h4 {
+    margin-top: 0;
+    font-weight: 600;
+    color: #222;
+}
+
+h1 {
+    font-size: 1.7rem;
+}
+
+a {
+    color: var(--accent-text);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
 header {
     padding: 1rem 0;
     background-color: var(--accent-bg);
@@ -47,7 +83,6 @@ header nav a:hover {
     opacity: 0.8;
 }
 
-/* Footer styling */
 footer {
     padding: 1rem 0;
     background-color: #eaeaea;
@@ -58,7 +93,6 @@ footer {
     margin-top: 2rem;
 }
 
-/* Table styling */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -84,7 +118,6 @@ tbody tr:hover {
     background-color: #f2f9f2;
 }
 
-/* Form elements */
 form {
     margin-bottom: 1.5rem;
 }
@@ -99,7 +132,8 @@ input[type="text"],
 input[type="password"],
 input[type="date"],
 input[type="email"],
-select, textarea {
+select,
+textarea {
     width: 100%;
     padding: 0.5rem 0.75rem;
     border: 1px solid #ccc;
@@ -125,21 +159,6 @@ button:hover {
     background-color: var(--accent-bg-hover);
 }
 
-a {
-    color: var(--accent-text);
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-h1, h2, h3, h4 {
-    margin-top: 0;
-    font-weight: 600;
-    color: #222;
-}
-
-/* Flash messages */
 .flash-msg {
     padding: 0.75rem 1rem;
     border-radius: 4px;
@@ -158,8 +177,6 @@ h1, h2, h3, h4 {
     border: 1px solid #b8daff;
 }
 
-/*
-/* Chess board box used in game_play and game_review */
 .chess-board-box {
     background: #222;
     color: #eee;
@@ -169,10 +186,9 @@ h1, h2, h3, h4 {
     border: 2px solid #555;
     font-family: "Courier New", monospace;
     font-size: 16px;
-    line-height: 1.1;   /* tighter, keeps rows aligned */
+    line-height: 1.1;
     margin-bottom: 1rem;
 }
-
 
 .status-bar {
     margin-bottom: 0.75rem;
@@ -195,13 +211,11 @@ h1, h2, h3, h4 {
     pointer-events: none;
 }
 
-/* Error text used in forms */
 .error_text {
     color: #a94442;
     margin-bottom: 1rem;
 }
 
-/* Details (used for PGN) */
 details summary {
     cursor: pointer;
     font-weight: 600;
@@ -217,36 +231,6 @@ details pre {
     overflow: auto;
 }
 
-/* Themes */
-
-/* Default variables for the green theme */
-:root {
-    --accent-bg: #2d7a36;
-    --accent-bg-hover: #25632d;
-    --accent-text: #2d7a36;
-}
-
-.theme-green {
-    --accent-bg: #2d7a36;
-    --accent-bg-hover: #25632d;
-    --accent-text: #2d7a36;
-}
-
-/* Blue theme – an alternative option */
-.theme-blue {
-    --accent-bg: #2b5c8a;
-    --accent-bg-hover: #21486a;
-    --accent-text: #2b5c8a;
-}
-
-/* Apply default theme to body when no explicit theme class is present */
-body:not(.theme-blue):not(.theme-green) {
-    --accent-bg: #2d7a36;
-    --accent-bg-hover: #25632d;
-    --accent-text: #2d7a36;
-}
-
-/* Utility classes */
 .text-center {
     text-align: center;
 }
@@ -258,14 +242,13 @@ body:not(.theme-blue):not(.theme-green) {
 .mb-2 { margin-bottom: 0.5rem; }
 .mb-3 { margin-bottom: 1rem; }
 
-/* Main container that centers content and limits page width */
 .page-container {
     max-width: 1100px;
     margin: 0 auto;
     padding: 20px 25px;
     display: flex;
     flex-direction: column;
-    gap: 20px; /* spacing between content blocks */
+    gap: 20px;
 }
 
 .section {
@@ -278,53 +261,202 @@ body:not(.theme-blue):not(.theme-green) {
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
-
-
-/* ===========================
-   Two-column layout helpers
-   =========================== */
-
-   .layout-two-col {
+.layout-two-col {
     display: flex;
     justify-content: center;
     align-items: flex-start;
     gap: 24px;
-    max-width: 1100px;
-    margin: 24px auto 40px auto;   /* center in page */
+    max-width: 980px;
+    margin: 1.5rem auto 3rem auto;
 }
 
 .col-left,
 .col-right {
-    flex: 2.5;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
-/* Slight bias: left column a bit wider */
 .col-left {
     flex: 1.1;
 }
+
 .col-right {
     flex: 0.9;
 }
 
-/* Card-style content blocks */
+.layout-two-col .col-right:empty {
+    display: none;
+}
+
 .card {
     background: #ffffff;
-    border-radius: 8px;
+    border-radius: 6px;
     padding: 18px 22px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    border: 1px solid #ddd;
+    box-shadow: 0 0 0 rgba(0,0,0,0);
     box-sizing: border-box;
 }
 
-/* If you want the whole page content in a card, you can reuse .card */
+.login-header {
+    background: var(--accent-bg);
+    padding: 18px 24px;
+    color: #fff;
+    text-align: left;
+    padding-left: 10%;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.12);
+    border-bottom: 3px solid var(--accent-bg-hover);
+}
 
-/* Responsive: stack columns on small screens */
+.login-subtext {
+    color: #e8ffe8;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.signup-link {
+    display: inline-block;
+    margin-top: 1rem;
+    text-align: center;
+    width: 100%;
+    color: var(--accent-text);
+    font-weight: 600;
+}
+
+.signup-link:hover {
+    text-decoration: underline;
+}
+
+.btn-secondary.signup-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    border: 1px solid var(--accent-bg);
+    background-color: #ffffff;
+    color: var(--accent-bg);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-secondary.signup-btn:hover {
+    background-color: #f0fff0;
+}
+
+.form-narrow {
+    max-width: 520px;
+    margin: auto;
+}
+
+.form-narrow h1 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.form-narrow label {
+    display: block;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    margin-bottom: 0.15rem;
+}
+
+.form-narrow input,
+.form-narrow select {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0.4rem;
+}
+
+.form-narrow .btn-row {
+    margin-top: 1rem;
+    gap: 0.5rem;
+}
+
+.main-dashboard {
+    margin-top: 0;
+    padding-top: 1.2rem;
+}
+
+.main-dashboard h1 {
+    margin-bottom: 0.3rem;
+}
+
+.welcome-line {
+    margin-bottom: 1.2rem;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 1.8rem;
+}
+
+.menu-tile {
+    display: block;
+    background: #fff;
+    border-radius: 4px;
+    padding: 16px 18px;
+    border: 1px solid #ddd;
+    text-decoration: none;
+    transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.menu-tile h3 {
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+    color: var(--accent-text);
+}
+
+.menu-tile p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.menu-tile:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: #b5cdb5;
+    background-color: #f8fbf8;
+}
+
+.admin-tile {
+    border-left: 4px solid var(--accent-bg);
+}
+
+.logout-container {
+    margin-top: 1rem;
+}
+
+.logout-link {
+    color: var(--accent-text);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.logout-link:hover {
+    text-decoration: underline;
+}
+
+.main-layout,
+.layout-two-col {
+    margin-top: 1.5rem;
+}
+
 @media (max-width: 900px) {
     .layout-two-col {
         flex-direction: column;
     }
 }
 
-
-.layout-two-col .col-right:empty {
-    display: none;
+#logincard {
+    margin: 5% 30%;
+    padding: auto;
 }

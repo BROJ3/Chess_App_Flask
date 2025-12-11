@@ -1,39 +1,73 @@
 {% extends "base.html" %}
 
 {% block content %}
+                    <h1>Main menu</h1>
+            <p class="welcome-line">
+                Welcome! You are logged in as <strong>{{ me.userID }}</strong>.
+            </p>
 <div class="layout-two-col">
+    
+
+    <!-- LEFT COLUMN: USER OPTIONS -->
     <div class="col-left">
-        <div class="card">
-            <div class="main">
-                <h1>Main menu</h1>
-                <div id="menumsg">
-                    Welcome! You are logged in as <strong>{{ me.userID }}</strong>.
-                </div>
-                <br><br>
 
-                <h2>User options</h2>
-                <ul>
-                    <li><a href="/users/search">Search & view users</a></li>
-                    <li><a href="/tournaments">Search & view tournaments / sign up / withdraw</a></li>
-                    <li><a href="/games/new">Start a new game (web UI)</a></li>
-                    <li><a href="/games">Review games</a></li>
-                </ul>
+        <div class="card main-dashboard">
 
-                {% if me.role == 'admin' %}
-                <h2>Admin options</h2>
-                <ul>
-                    <li><a href="/users/manage">Search / Create / edit / delete users</a></li>
-                    <li><a href="/tournaments/manage">View / Create / edit / delete tournaments</a></li>
-                </ul>
-                {% endif %}
 
-                <a href="/logout">Logout</a><br>
+
+            <h2>User options</h2>
+
+            <div class="menu-grid">
+                <a class="menu-tile" href="/users/search">
+                    <h3>Users</h3>
+                    <p>Search and view users</p>
+                </a>
+
+                <a class="menu-tile" href="/tournaments">
+                    <h3>Tournaments</h3>
+                    <p>Sign up, withdraw, or browse events</p>
+                </a>
+
+                <a class="menu-tile" href="/games/new">
+                    <h3>Play</h3>
+                    <p>Start a new game</p>
+                </a>
+
+                <a class="menu-tile" href="/games">
+                    <h3>Review</h3>
+                    <p>Replay or analyze your games</p>
+                </a>
             </div>
+
+            <div class="logout-container">
+                <a class="logout-link" href="/logout">Logout</a>
+            </div>
+
         </div>
     </div>
 
     <div class="col-right">
-        <!-- Empty for now; you could add recent games, news, etc. -->
+        {% if me.role == "admin" %}
+        <div class="card main-dashboard">
+
+            <h2>Admin options</h2>
+
+            <div class="menu-grid">
+                <a class="menu-tile" href="/users/manage">
+                    <h3>User Admin</h3>
+                    <p>Create, edit & delete users</p>
+                </a>
+
+                <a class="menu-tile" href="/tournaments/manage">
+                    <h3>Tournament Admin</h3>
+                    <p>Manage tournament settings</p>
+                </a>
+            </div>
+
+        </div>
+        {% endif %}
     </div>
+
 </div>
+
 {% endblock %}
