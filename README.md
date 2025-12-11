@@ -56,6 +56,15 @@ ToniChess is a Flask-based web application built to streamline chess club operat
 
 ---
 
+### **Gameplay**
+<img src="assets/gameplay.png" width="70%">
+
+ToniChess supports live gameplay directly in the browser. Moves are entered using **SAN notation** (e.g., `e4`, `Nf3`, `0-0`), validated by `python-chess`, and immediately reflected on the ASCII-rendered board. The move list updates in real time, allowing players to track the game as it progresses.  
+
+All completed games are automatically saved and can later be **reviewed move-by-move**, with each position reconstructed from stored FEN strings. This allows users to replay their games, study mistakes, and review tournament matches.
+
+---
+
 ### **Database Schema**
 <img src="assets/db_schema.png" width="70%">
 
